@@ -272,14 +272,14 @@ async def chat_with_bot(request: ChatRequest):
                 
                 prompt_parts.extend([
                     "Requirements:",
-                    "- small and mobile message type replies"
-                    "- Start with a warm greeting addressing the user directly",
-                    "- Use a warm, friendly tone",
-                    "- Avoid medical jargon",
-                    "- Give practical, everyday suggestions",
-                    "- Keep responses mobile freindly (short and concise)",
-                    "- End with a hopeful note every time diffrent",
-                    "Note: Do not mention being AI or use AI terminology"
+                    "- Provide small, mobile-friendly message replies.",
+                    "- Start with a warm greeting addressing the user directly, like a counsellor, but do not use names.",
+                    "- Use a warm and friendly tone.",
+                    "- Avoid medical jargon.",
+                    "- Offer practical, everyday suggestions.",
+                    "- Keep messages short and concise for mobile users.",
+                    "- End with a hopeful note each time (must vary).",
+                    "Note: Do not mention being an AI or use AI-related terminology."
                 ])
                 
                 prompt = "\n".join(prompt_parts)
