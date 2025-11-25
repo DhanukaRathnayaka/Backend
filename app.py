@@ -329,7 +329,7 @@ async def get_suggestions(user_id: str):
         )
 
 @app.post("/recommend")
-async def recommend_doctor(req: UserRequest):7
+async def recommend_doctor(req: UserRequest):
     """Recommend a doctor for a user based on their mental state"""
     try:
         logger.info("====== New Doctor Recommendation Request ======")
