@@ -121,13 +121,13 @@ def clean_response(text: str, crisis_mode: bool = False) -> str:
     text = text.strip('"\'')
     
     # Uppercase first sentence
-    if "\n" in text:
-        first_line, rest = text.split("\n", 1)
-        text = f"{first_line.upper()}\n{rest}"
-    else:
-        sentences = text.split(". ")
-        if len(sentences) > 1:
-            text = f"{sentences[0].strip().upper()}. {'. '.join(sentences[1:]).strip()}"
+    # if "\n" in text:
+    #     first_line, rest = text.split("\n", 1)
+    #     text = f"{first_line.upper()}\n{rest}"
+    # else:
+    #     sentences = text.split(". ")
+    #     if len(sentences) > 1:
+    #         text = f"{sentences[0].strip().upper()}. {'. '.join(sentences[1:]).strip()}"
     
     # Remove hotline numbers if not crisis mode
     if not crisis_mode:
@@ -272,11 +272,12 @@ async def chat_with_bot(request: ChatRequest):
                 
                 prompt_parts.extend([
                     "Requirements:",
-                    "- Start with an encouraging sentence",
+                    "- Start with an tone and act asa councellor",
+                    "- mobile friendly formatting with markdown",
                     "- Use a warm, friendly tone",
                     "- Avoid medical jargon",
                     "- Give practical, everyday suggestions",
-                    "- Keep responses under 200 words",
+                    "- Keep responses under 150 words",
                     "- End with a hopeful note",
                     "Note: Do not mention being AI or use AI terminology"
                 ])
