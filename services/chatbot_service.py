@@ -288,7 +288,7 @@ async def chat_with_bot(request: ChatRequest):
                 if context_prompt:
                     messages[-1]["content"] += context_prompt
 
-                messages[-1]["content"] += "\n\nRequirements:\n- Start with an encouraging sentence\n- Use a warm, friendly tone\n- Avoid medical jargon\n- Give practical, everyday suggestions\n- Keep responses under 200 words\n- End with a hopeful note\nNote: Do not mention being AI or use AI terminology"
+                messages[-1]["content"] += "\n\nRequirements:\n- Start with an encouraging sentence\n- Use a warm, friendly tone\n- Avoid medical jargon\n- Give practical, everyday suggestions\n- Keep responses under 200 words\n- End with a hopeful note\nNote: Do not mention being AI or use AI terminology\n-if providing helplines, include only Sri Lankan helplines.\n- limit the word count to 70 and mobile freindly responses"
 
                 ai_response = query_groq(selected_model, messages)
                 response = clean_response(ai_response, crisis_mode)
