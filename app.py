@@ -1,5 +1,5 @@
-from fastapi import FastAPI, HTTPException # type: ignore
-from fastapi.middleware.cors import CORSMiddleware # pyright: ignore[reportMissingImports]
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from services.chatbot_service import router as chatbot_router
 # Import the suggestions router and include it so /generate_suggestions is available
 from services import suggestion_generator
