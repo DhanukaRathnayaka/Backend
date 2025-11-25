@@ -1,5 +1,5 @@
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, HTTPException # type: ignore
+from fastapi.middleware.cors import CORSMiddleware # pyright: ignore[reportMissingImports]
 from services.chatbot_service import router as chatbot_router
 # Import the suggestions router and include it so /generate_suggestions is available
 from services import suggestion_generator
@@ -329,7 +329,7 @@ async def get_suggestions(user_id: str):
         )
 
 @app.post("/recommend")
-async def recommend_doctor(req: UserRequest):
+async def recommend_doctor(req: UserRequest):7
     """Recommend a doctor for a user based on their mental state"""
     try:
         logger.info("====== New Doctor Recommendation Request ======")
