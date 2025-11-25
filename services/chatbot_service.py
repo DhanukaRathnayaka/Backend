@@ -1,6 +1,6 @@
 from fastapi import FastAPI, APIRouter, HTTPException
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List, Dict
 import requests
 import os
 import json
@@ -47,7 +47,7 @@ except Exception as e:
 
 # Crisis keywords and response
 CRISIS_KEYWORDS = [
-    "suicide", "kill myself", "end my life",
+    "suicide", "kill", "end my life","die","cut",
     "can't go on", "self harm", "hurt myself"
 ]
 
@@ -140,18 +140,19 @@ def clean_response(text: str, crisis_mode: bool = False) -> str:
     
     return text.strip()
 
-def query_groq(model: str, prompt: str, max_tokens: int = 512) -> str:
+def query_groq(model: str, messages: List[Dict[str, str]], max_tokens: int = 512) -> str:
     """Query the Groq API for a response."""
     if groq_client is None:
         logger.warning("Groq API is not available, using fallback responses")
         raise Exception("Groq client not initialized")
     try:
+        # Add system message if not present
+        if not messages or messages[0].get("role") != "system":
+            messages.insert(0, {"role": "system", "content": "You are a compassionate mental health assistant."})
+
         response = groq_client.chat.completions.create(
             model=model,
-            messages=[
-                {"role": "system", "content": "You are a compassionate mental health assistant."},
-                {"role": "user", "content": prompt}
-            ],
+            messages=messages,
             max_tokens=max_tokens,
             temperature=0.7
         )
@@ -222,6 +223,7 @@ class ChatRequest(BaseModel):
     message: str
     model: str = "default"
     user_id: Optional[str] = None
+    history: Optional[List[Dict[str, str]]] = None
 
 class ChatResponse(BaseModel):
     response: str
@@ -258,32 +260,37 @@ async def chat_with_bot(request: ChatRequest):
         # Try to use AI first, fallback to dataset/generic responses
         try:
             if groq_client is not None:
-                # Build prompt for AI
-                prompt_parts = [
-                    "As a mental health support assistant, respond with empathy and care:",
-                    f'User\'s message: "{request.message}"'
-                ]
-                
+                # Build messages list for AI
+                messages = []
+
+                # Add conversation history if provided
+                if request.history:
+                    for msg in request.history:
+                        messages.append({
+                            "role": msg["role"],
+                            "content": msg["content"]
+                        })
+
+                # Add current user message
+                messages.append({
+                    "role": "user",
+                    "content": request.message
+                })
+
                 # Add context from dataset if available
+                context_prompt = ""
                 for keyword, advice in dataset.items():
                     if keyword.lower() in user_message:
-                        prompt_parts.append(f"Relevant information: {advice}")
+                        context_prompt = f"\nRelevant information: {advice}"
                         break
-                
-                prompt_parts.extend([
-                    "Requirements:",
-                    "- Provide small, mobile-friendly message replies.",
-                    "- Start with a warm greeting addressing the user directly, like a counsellor, but do not use names.",
-                    "- Use a warm and friendly tone.",
-                    "- Avoid medical jargon.",
-                    "- Offer practical, everyday suggestions.",
-                    "- Keep messages short and concise for mobile users.",
-                    "- End with a hopeful note each time (must vary).",
-                    "Note: Do not mention being an AI or use AI-related terminology."
-                ])
-                
-                prompt = "\n".join(prompt_parts)
-                ai_response = query_groq(selected_model, prompt)
+
+                # Add instructions to the last user message
+                if context_prompt:
+                    messages[-1]["content"] += context_prompt
+
+                messages[-1]["content"] += "\n\nRequirements:\n- Start with an encouraging sentence\n- Use a warm, friendly tone\n- Avoid medical jargon\n- Give practical, everyday suggestions\n- Keep responses under 200 words\n- End with a hopeful note\nNote: Do not mention being AI or use AI terminology"
+
+                ai_response = query_groq(selected_model, messages)
                 response = clean_response(ai_response, crisis_mode)
                 logger.info("Generated response using Groq API")
                 return ChatResponse(response=response)

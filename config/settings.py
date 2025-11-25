@@ -16,3 +16,6 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # Application Settings
 DEBUG = os.getenv("DEBUG", "false").lower() == "true"
+
+# Chatbot Configuration
+CHATBOT_PROMPT_REQUIREMENTS = "\n\nRequirements:\n- Provide small, mobile-friendly message replies.\n- Start with a warm greeting addressing the user directly, like a counsellor, but do not use names.\n- Use a warm and friendly tone.\n- Avoid medical jargon.\n- Offer practical, everyday suggestions.\n- Keep messages short and concise for mobile users.\n- End with a hopeful note each time (must vary).\nNote: Do not mention being an AI or use AI-related terminology.\nif providing help lines use only srilankan helplines"
