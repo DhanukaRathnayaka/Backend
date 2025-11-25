@@ -121,13 +121,13 @@ def clean_response(text: str, crisis_mode: bool = False) -> str:
     text = text.strip('"\'')
     
     # Uppercase first sentence
-    if "\n" in text:
-        first_line, rest = text.split("\n", 1)
-        text = f"{first_line.upper()}\n{rest}"
-    else:
-        sentences = text.split(". ")
-        if len(sentences) > 1:
-            text = f"{sentences[0].strip().upper()}. {'. '.join(sentences[1:]).strip()}"
+    # if "\n" in text:
+    #     first_line, rest = text.split("\n", 1)
+    #     text = f"{first_line.upper()}\n{rest}"
+    # else:
+    #     sentences = text.split(". ")
+    #     if len(sentences) > 1:
+    #         text = f"{sentences[0].strip().upper()}. {'. '.join(sentences[1:]).strip()}"
     
     # Remove hotline numbers if not crisis mode
     if not crisis_mode:
@@ -288,7 +288,7 @@ async def chat_with_bot(request: ChatRequest):
                 if context_prompt:
                     messages[-1]["content"] += context_prompt
 
-                messages[-1]["content"] += "\n\nRequirements:\n- Start with an encouraging sentence\n- Use a warm, friendly tone\n- Avoid medical jargon\n- Give practical, everyday suggestions\n- Keep responses under 200 words\n- End with a hopeful note\nNote: Do not mention being AI or use AI terminology\n-if providing helplines, include only Sri Lankan helplines.\n- limit the word count to 70 and mobile freindly responses"
+                messages[-1]["content"] += "\n\nRequirements:\n- Start with an encouraging sentence but only the first message not all\n- Use a warm, friendly tone\n- Avoid medical jargon\n- Give practical, everyday suggestions\n- Keep responses under 200 words\n- End with a hopeful note\nNote: Do not mention being AI or use AI terminology\n-if providing helplines, include only Sri Lankan helplines.\n- limit the word count to 150 and mobile freindly responses"
 
                 ai_response = query_groq(selected_model, messages)
                 response = clean_response(ai_response, crisis_mode)
